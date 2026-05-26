@@ -1,0 +1,133 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function isHardcodedAdmin() {
+      return signedIn() && (
+        request.auth.uid == 'b6pl0LVKmoWGpfXIkITupYN2tnB3' ||
+        request.auth.token.email == 'freelancertachin@gmail.com'
+      );
+    }
+
+    function adminDoc() {
+      return /databases/$(database)/documents/admin_users/$(request.auth.uid);
+    }
+
+    function isAdmin() {
+      return isHardcodedAdmin() || (signedIn() && exists(adminDoc()));
+    }
+
+    match /admin_users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /profiles/{uid} {
+      allow read: if true;
+      allow create: if isOwner(uid) || isAdmin();
+      allow update: if isOwner(uid) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /student_profiles/{uid} {
+      allow read, write: if isOwner(uid) || isAdmin();
+    }
+
+    match /resources/{id} {
+      allow read: if resource.data.is_active == true || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /resource_classes/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /resource_subjects/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /feedback/{id} {
+      allow create: if signedIn();
+      allow read, update, delete: if isAdmin();
+    }
+
+    match /payments/{id} {
+      allow create: if signedIn() && request.resource.data.user_id == request.auth.uid;
+      allow read: if isAdmin() || (signedIn() && resource.data.user_id == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /payment_proofs/{id} {
+      allow create: if signedIn() && request.resource.data.user_id == request.auth.uid;
+      allow read: if isAdmin() || (signedIn() && resource.data.user_id == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /premium_users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    match /affiliate_codes/{id} {
+      allow read: if signedIn();
+      allow create, update: if signedIn() && request.resource.data.user_id == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
+    match /affiliate_earnings/{id} {
+      allow create: if signedIn();
+      allow read: if isAdmin() || (signedIn() && resource.data.referrer_id == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /withdraw_requests/{id} {
+      allow create: if signedIn() && request.resource.data.user_id == request.auth.uid;
+      allow read: if isAdmin() || (signedIn() && resource.data.user_id == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /doubts/{id} {
+      allow read: if resource.data.status == 'approved' || resource.data.user_id == request.auth.uid || isAdmin();
+      allow create: if signedIn() && request.resource.data.user_id == request.auth.uid;
+      allow update: if isAdmin() || (signedIn() && resource.data.user_id == request.auth.uid);
+      allow delete: if isAdmin() || (signedIn() && resource.data.user_id == request.auth.uid);
+    }
+
+    match /doubt_replies/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.user_id == request.auth.uid;
+      allow update, delete: if isAdmin() || (signedIn() && resource.data.user_id == request.auth.uid);
+    }
+
+    match /notifications/{id} {
+      allow create: if signedIn();
+      allow read, update, delete: if isAdmin() || (signedIn() && resource.data.user_id == request.auth.uid);
+    }
+
+    match /user_tokens/{uid}/tokens/{tokenId} {
+      allow read, write: if isOwner(uid) || isAdmin();
+    }
+
+    match /user_memory/{id} {
+      allow read, write: if isAdmin() || (signedIn() && resource.data.user_id == request.auth.uid);
+      allow create: if signedIn() && request.resource.data.user_id == request.auth.uid;
+    }
+
+    match /admin_bootstrap/{id} {
+      allow read, write: if isAdmin();
+    }
+
+    match /{collection}/{id} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

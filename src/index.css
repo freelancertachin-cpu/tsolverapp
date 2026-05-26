@@ -1,0 +1,313 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-background: #050505;
+  --color-foreground: #ffffff;
+  
+  --color-primary: #ffffff;
+  --color-primary-foreground: #000000;
+  
+  --color-secondary: #0a0a01;
+  --color-secondary-foreground: #ffffff;
+  
+  --color-muted: #111111;
+  --color-muted-foreground: #a1a1aa;
+  
+  --color-accent: #111111;
+  --color-accent-foreground: #ffffff;
+  
+  --color-border: #1a1a1a;
+  --color-input: #1a1a1a;
+  --color-ring: #ffffff;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased selection:bg-white selection:text-black transition-colors duration-500 overflow-x-hidden;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .light ::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.05);
+  }
+  .light ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Responsive Safe Padding */
+.safe-padding {
+  @apply px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full;
+}
+
+/* Light Mode Core */
+.light {
+  --color-background: #fdfdfd;
+  --color-foreground: #000000;
+  --color-border: #e4e4e7;
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #52525b;
+  --color-secondary: #f4f4f5;
+  --color-accent: #f4f4f5;
+}
+
+.light body {
+  @apply bg-[#fafafa];
+}
+
+/* Futuristic Extensions */
+.shadow-glow {
+  box-shadow: 0 0 30px -5px rgba(255,255,255,0.1);
+}
+
+.dark .shadow-glow {
+  box-shadow: 0 0 40px -5px rgba(255,255,255,0.1);
+}
+
+.light .shadow-glow {
+  box-shadow: 0 0 30px -10px rgba(0,0,0,0.1);
+}
+
+.neon-border {
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: border-color 0.3s;
+}
+.neon-border:hover {
+  border-color: rgba(255,255,255,0.3);
+}
+
+.light .neon-border {
+  border-color: rgba(0,0,0,0.1);
+}
+
+.glass-reflection {
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-reflection::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top right, rgba(255,255,255,0.1), transparent);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.7s;
+}
+
+.group:hover .glass-reflection::after {
+  opacity: 1;
+}
+
+.cyber-panel {
+  background: rgba(255,255,255,0.02);
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 2rem;
+}
+
+.dark .cyber-panel {
+  background: rgba(0,0,0,0.4);
+}
+
+.light .cyber-panel {
+  background: rgba(255,255,255,0.8);
+  border-color: rgba(0,0,0,0.05);
+}
+
+.cyber-button {
+  background: #000;
+  color: #fff;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  padding: 0.875rem 2rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s;
+}
+
+.dark .cyber-button {
+  background: #fff;
+  color: #000;
+}
+
+.cyber-button:active {
+  transform: scale(0.95);
+}
+
+.glass-card {
+  background: rgba(0,0,0,0.02);
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 40px;
+  padding: 2rem;
+  transition: all 0.5s;
+}
+
+.dark .glass-card {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.05);
+}
+
+.glass-card:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.dark .glass-card:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+/* Light Mode Overrides */
+.light .markdown-body {
+  @apply text-black/70 font-bold;
+}
+
+.light .markdown-body h1, .light .markdown-body h2, .light .markdown-body h3, .light .markdown-body p {
+  @apply text-black;
+}
+
+.light .markdown-body code {
+  @apply bg-black/5 text-black;
+}
+
+.markdown-body {
+  @apply text-sm leading-relaxed space-y-4 text-white/70 font-bold;
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+  @apply font-black text-2xl text-white uppercase tracking-tight italic;
+}
+
+.markdown-body p {
+  @apply text-white/80;
+}
+
+.markdown-body ul, .markdown-body ol {
+  @apply pl-6 list-disc marker:text-white/40;
+}
+
+.markdown-body code {
+  @apply bg-muted px-1.5 py-0.5 rounded text-xs font-mono text-white;
+}
+
+/* Educational Game Aesthetic Extensions */
+.paper-texture {
+  background-color: #f4e4bc;
+  background-image: 
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+  position: relative;
+  box-shadow: inset 0 0 100px rgba(0,0,0,0.1);
+}
+
+.paper-texture::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url('https://www.transparenttextures.com/patterns/parchment.png');
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.paper-texture::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 50px rgba(139, 69, 19, 0.1);
+  pointer-events: none;
+}
+
+.ink-text {
+  color: #2c1e16;
+  font-family: serif;
+  text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.1);
+}
+
+/* Animations */
+@keyframes slow-pan {
+  from { background-position: 0 0; }
+  to { background-position: 40px 40px; }
+}
+
+.animate-slow-pan {
+  animation: slow-pan 2s linear infinite;
+}
+
+
+/* Production polish: keep new premium panels readable in both dark and light modes */
+.light .cyber-panel [class*="text-white/"] {
+  color: rgba(15, 23, 42, 0.62) !important;
+}
+
+.light .cyber-panel .text-white {
+  color: rgb(15, 23, 42) !important;
+}
+
+.light .cyber-panel [class*="border-white/"] {
+  border-color: rgba(15, 23, 42, 0.09) !important;
+}
+
+.light .cyber-panel [class*="bg-white/"] {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+}
+
+.light .cyber-panel input,
+.light .cyber-panel select,
+.light .cyber-panel textarea {
+  background: rgba(15, 23, 42, 0.04) !important;
+  border-color: rgba(15, 23, 42, 0.1) !important;
+  color: rgb(15, 23, 42) !important;
+}
+
+.light .cyber-panel input::placeholder,
+.light .cyber-panel textarea::placeholder {
+  color: rgba(15, 23, 42, 0.35) !important;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.35s ease-out both;
+}
+
+.light .cyber-panel .bg-green-500.text-white,
+.light .cyber-panel .bg-red-500.text-white,
+.light .cyber-panel .bg-blue-500.text-white,
+.light .cyber-panel .bg-purple-500.text-white {
+  color: #ffffff !important;
+}

@@ -1,0 +1,8 @@
+{
+  "name": "T-Solver AI",
+  "description": "Premium All-in-One Educational suite with 50+ Cinematic Games, AI Study tools, and Multilingual support.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

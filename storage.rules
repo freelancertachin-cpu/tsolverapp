@@ -1,0 +1,64 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return signedIn() && (
+        request.auth.uid == 'b6pl0LVKmoWGpfXIkITupYN2tnB3' ||
+        request.auth.token.email == 'freelancertachin@gmail.com'
+      );
+    }
+
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    function isPdf() {
+      return request.resource.contentType == 'application/pdf';
+    }
+
+    match /profile-images/{uid}/{fileName} {
+      allow read: if true;
+      allow write: if isOwner(uid) && isImage() && request.resource.size < 5 * 1024 * 1024;
+    }
+
+    match /payment-proofs/{uid}/{fileName} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow write: if isOwner(uid) && isImage() && request.resource.size < 8 * 1024 * 1024;
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
+    match /community-doubts/{uid}/{fileName} {
+      allow read: if true;
+      allow write: if isOwner(uid) && isImage() && request.resource.size < 8 * 1024 * 1024;
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
+    match /pdf-uploads/{uid}/{fileName} {
+      allow read, write: if isOwner(uid) && isPdf() && request.resource.size < 25 * 1024 * 1024;
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
+    match /voice-recordings/{uid}/{fileName} {
+      allow read, write: if isOwner(uid) && request.resource.size < 20 * 1024 * 1024;
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
+    match /resource-thumbnails/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin() && isImage() && request.resource.size < 5 * 1024 * 1024;
+      allow delete: if isAdmin();
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
